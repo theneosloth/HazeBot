@@ -26,10 +26,7 @@ class SpeckChecker(discord.Client):
         # Used for comparing the current event time.
         self.curr_event = datetime.now()
 
-        # command_dict is initialized when commands is imported. It contains all the commands in commands.py
-        from commands import command_dict
-        # Assign all the commands from commands.py to the object.
-        self.commands = command_dict
+        self._load_commands()
 
     def get_admins(self):
         ''' A generator that yields all the administrators.'''
@@ -70,6 +67,12 @@ class SpeckChecker(discord.Client):
         await self.send_typing(self.channel)
         await self.send_message(self.channel, message)
 
+    def _load_commands(self):
+        # command_dict is initialized when commands is imported. It contains all the commands in commands.py
+        # Assign all the commands from commands.py to the object.
+        from commands import command_dict
+        self.commands = command_dict
+
     def yield_commands(self):
         for command in self.commands:
             yield command
@@ -102,7 +105,11 @@ class SpeckChecker(discord.Client):
         """ A function that checks if there are any new steam events"""
         await self.wait_until_ready()
         while not self.is_closed:
-            event = self.event_parser.get_last_event()
-            if (self.is_new(event)):
-                await self.say(event["Message"])
+            try:
+                event = self.event_parser.get_last_event()
+                if (self.is_new(event)):
+                    await self.say(event["Message"])
+            except Exception as e:
+                # Pokemon exception checking. Will hopefully change later.
+                pass
             await asyncio.sleep(60)

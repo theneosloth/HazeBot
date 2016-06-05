@@ -45,9 +45,13 @@ async def coin_command(parent, args, user):
 @command("!roll")
 async def roll_command(parent, args, user):
     from random import randrange
-    try:
-        range = int(args[0])
-    except ValueError:
+    # Clunky solution but I couldn't catch the keyerror exception.
+    if (len(args) < 1):
         range = 6
+    else:
+        try:
+            range = int(args[0])
+        except (ValueError, KeyError):
+            range = 6
     roll = randrange(1, range)
     await parent.say("Rolled {0} on a {1} sided die.".format(roll, range))

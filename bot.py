@@ -3,11 +3,16 @@ import asyncio
 
 from steam_parser import SteamEventParser
 from datetime import datetime
-from commands import command_dict
-
 
 class SpeckChecker(discord.Client):
     def __init__(self, token, channel_id, event_id):
+        """ Constructor for the  bot class.
+
+        Args:
+            token (str): the token for the discord bot.
+            channel_id(str): the id of the channel the bot is going to be working on.
+            event_id: the steam id of the group that the bot is going to check the events for.
+        """
         super().__init__()
 
         self.token = token
@@ -20,6 +25,10 @@ class SpeckChecker(discord.Client):
 
         # Used for comparing the current event time.
         self.curr_event = datetime.now()
+
+        # command_dict is initialized when commands is imported. It contains all the commands in commands.py
+        from commands import command_dict
+        # Assign all the commands from commands.py to the object.
         self.commands = command_dict
 
     def get_admins(self):
@@ -37,7 +46,7 @@ class SpeckChecker(discord.Client):
         ''' Checks if a user is an admin '''
         return user in self.get_admins()
 
-    async def process_commands(self, message, user):
+    async def _process_commands(self, message, user):
         # Get the message itself.
         text = message.content
 
@@ -57,9 +66,13 @@ class SpeckChecker(discord.Client):
                 await func(self, args, user)
 
     async def say(self, message):
-        ''' Wrapper for send_typing and send_message '''
+        """ Wrapper for send_typing and send_message """
         await self.send_typing(self.channel)
         await self.send_message(self.channel, message)
+
+    def yield_commands(self):
+        for command in self.commands:
+            yield command
 
     async def on_message(self, message):
         '''Overloaded Method'''
@@ -67,7 +80,7 @@ class SpeckChecker(discord.Client):
         # Only process messages if the message is not from the bot itself
         if message.author == self.user:
             return
-        await self.process_commands(message, message.author)
+        await self._process_commands(message, message.author)
 
     async def on_ready(self):
         '''Overloaded Method'''
@@ -75,7 +88,7 @@ class SpeckChecker(discord.Client):
         await self.say("Hello World")
 
     def is_new(self, event):
-        ''' Checks if the event string dict is newer than current date '''
+        """ Checks if the event string dict is newer than current date """
         event_time = "{0} {1}".format(event["Date"], event['Time'])
         event_time = datetime.strptime(event_time, "%A %d %H:%M%p")
         event_time.replace(year=datetime.today().year)
@@ -86,11 +99,10 @@ class SpeckChecker(discord.Client):
             return False
 
     async def checkEvents(self):
-        ''' A function that checks if there are any new steam events'''
+        """ A function that checks if there are any new steam events"""
         await self.wait_until_ready()
         while not self.is_closed:
             event = self.event_parser.get_last_event()
             if (self.is_new(event)):
                 await self.say(event["Message"])
             await asyncio.sleep(60)
-

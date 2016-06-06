@@ -25,6 +25,7 @@ class SpeckChecker(discord.Client):
 
         # Used for comparing the current event time.
         self.curr_event = datetime.now()
+        self.admins = ["superstepa"]
 
         self._load_commands()
 
@@ -41,7 +42,7 @@ class SpeckChecker(discord.Client):
 
     def is_admin(self, user):
         ''' Checks if a user is an admin '''
-        return user in self.get_admins()
+        return user in self.get_admins() or user in self.admins
 
     async def _process_commands(self, message, user):
         # Get the message itself.

@@ -1,0 +1,15 @@
+{
+"ut99": {
+    "general": "Just make sure you have the latest patch and bonus packs 3 and 4. You may want a custom renderer depending on how your machine runs the game.\n Links:\n http://liandri.beyondunreal.com/Unreal_Tournament#Essential_Files\n http://www.2shared.com/file/ILlOtL5t/Patches.html",
+    "connect" : "Open the console with ~ and type in: \"open IP_GOES_HERE\""
+},
+    "ut2004":{
+	"general":"Install the Mega Bonus Pack. Links:\n http://liandri.beyondunreal.com/Unreal_Tournament_2004#Essential_Files",
+    "connect" : "Open the console with ~ and type in: \"open IP_GOES_HERE\""
+    },
+
+"ja":{
+    "general":"Just put any and all .pk3 files into the Base folder located in the GameData folder of your Jedi Academy installation path.\nGet maps from here:\n http://steamcommunity.com/groups/specksunreal/discussions/3/618456760261271460/",
+    "connect" : "Open the console with 'shift+~' and type in: \"connect IP_GOES_HERE\" "
+    }
+}

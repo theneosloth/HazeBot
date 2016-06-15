@@ -24,7 +24,7 @@ class SpeckChecker(discord.Client):
         self.event_parser = SteamEventParser(self.event_id)
 
         # Used for comparing the current event time.
-        self.curr_event = datetime.now()
+        self.curr_event = datetime.today()
         self.admins = ["superstepa"]
 
         self._load_commands()
@@ -75,6 +75,7 @@ class SpeckChecker(discord.Client):
         self.commands = command_dict
 
     def yield_commands(self):
+        """Yield all the commands"""
         for command in self.commands:
             yield command
 
@@ -89,13 +90,14 @@ class SpeckChecker(discord.Client):
     async def on_ready(self):
         '''Overloaded Method'''
         print("Logged in as {0}".format(self.user.name))
-        await self.say("Hello World")
 
     def is_new(self, event):
         """ Checks if the event string dict is newer than current date """
         event_time = "{0} {1}".format(event["Date"], event['Time'])
         event_time = datetime.strptime(event_time, "%A %d %H:%M%p")
-        event_time.replace(year=datetime.today().year)
+        # Add the current day and year to the date
+        event_time = event_time.replace(year=datetime.today().year,
+                           month=datetime.today().month)
         if (event_time > self.curr_event):
             self.curr_event = event_time
             return True
@@ -105,11 +107,14 @@ class SpeckChecker(discord.Client):
     async def checkEvents(self):
         """ A function that checks if there are any new steam events"""
         await self.wait_until_ready()
+        # Piggybacking off this in order to reload all the commands.
+        # Ideally this should be in its own method.
+        self._load_commands()
         while not self.is_closed:
             try:
                 event = self.event_parser.get_last_event()
                 if (self.is_new(event)):
-                    await self.say(event["Message"])
+                    await self.say("@everyone {0}".format(event["Message"]))
             except Exception as e:
                 # Pokemon exception checking. Will hopefully change later.
                 pass

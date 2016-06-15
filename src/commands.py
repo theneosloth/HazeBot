@@ -33,7 +33,7 @@ async def command_help(parent, args, user):
 @command("!quit")
 async def quit_command(parent, args, user):
     if parent.is_admin(user):
-        await parent.say("Good bye")
+        print("Logged out as {0}".format(parent.user.name))
         await parent.logout()
 
 @command("!coin")
@@ -45,7 +45,7 @@ async def coin_command(parent, args, user):
 @command("!roll")
 async def roll_command(parent, args, user):
     from random import randrange
-    # Clunky solution but I couldn't catch the keyerror exception.
+    # Clunky, temporary (and therefore permanent) solution.
     if (len(args) < 1):
         range = 6
     else:
@@ -82,7 +82,7 @@ async def command_help(parent, args, user):
     with open(path, 'r') as f:
         data = loads(f.read())
         try:
-            msg = data[game][request]
+            msg = "\n".join(data[game][request])
         except KeyError:
             msg = ERROR_MSG
         await parent.say(msg)

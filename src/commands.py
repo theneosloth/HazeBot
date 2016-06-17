@@ -86,3 +86,17 @@ async def command_help(parent, args, user):
         except KeyError:
             msg = ERROR_MSG
         await parent.say(msg)
+
+@command("!choice")
+async def choice_command(parent, args, user):
+    """Resolves an argument"""
+    from random import choice
+    # Removes all 'or' from arguments
+    await parent.say("I choose: {0}".format(
+        choice([x for x in args if x != "or"])))
+
+@command("!event")
+async def event_command(parent, args, user):
+    event = parent.get_last_event()
+    await parent.say("{0} @ {1}, {2}".format(
+        event["Message"], event["Date"], event["Time"]))

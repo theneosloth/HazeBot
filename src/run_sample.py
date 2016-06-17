@@ -1,6 +1,6 @@
 import asyncio
 
-from bot import SpeckChecker
+from bot import HazeBot
 
 if __name__ == "__main__":
     token = "TOKEN_HERE"
@@ -9,7 +9,7 @@ if __name__ == "__main__":
     # Can be removed if you don't need steam event checking.
     event_id = "STEAM_EVENT_ID"
 
-    testBot = SpeckChecker(token, channel_id, event_id)
+    testBot = HazeBot(token, channel_id, event_id)
 
     loop = asyncio.get_event_loop()
     try:

@@ -4,7 +4,7 @@ import asyncio
 from steam_parser import SteamEventParser
 from datetime import datetime
 
-class SpeckChecker(discord.Client):
+class HazeBot(discord.Client):
     def __init__(self, token, channel_id, event_id):
         """ Constructor for the  bot class.
 
@@ -39,6 +39,9 @@ class SpeckChecker(discord.Client):
                         if (permission[0] == "administrator" and
                                 permission[1]):
                             yield member
+
+    def get_last_event(self):
+        return self.event_parser.get_last_event()
 
     def is_admin(self, user):
         ''' Checks if a user is an admin '''
@@ -98,6 +101,7 @@ class SpeckChecker(discord.Client):
         # Add the current day and year to the date
         event_time = event_time.replace(year=datetime.today().year,
                            month=datetime.today().month)
+
         if (event_time > self.curr_event):
             self.curr_event = event_time
             return True
@@ -107,9 +111,7 @@ class SpeckChecker(discord.Client):
     async def checkEvents(self):
         """ A function that checks if there are any new steam events"""
         await self.wait_until_ready()
-        # Piggybacking off this in order to reload all the commands.
-        # Ideally this should be in its own method.
-        self._load_commands()
+
         while not self.is_closed:
             try:
                 event = self.event_parser.get_last_event()

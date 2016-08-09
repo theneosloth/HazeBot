@@ -26,6 +26,7 @@ class HazeBot(discord.Client):
         # Used for comparing the current event time.
         self.curr_event = datetime.today()
         self.admins = ["superstepa"]
+        self.commands = {}
 
         self._load_commands()
 
